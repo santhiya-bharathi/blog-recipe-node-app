@@ -28,7 +28,7 @@ const client = await createConnection();
 
 
 app.get("/",(request,response)=>{
-    response.send("hello world");
+    response.send("hello hi world");
 });
 
     app.get("/saladrecipe", async (request,response)=>{
