@@ -42,7 +42,7 @@ app.get("/",(request,response)=>{
     response.send("hello world");
 });
 
-    app.get("/saladrecipe", auth, async (request,response)=>{
+    app.get("/saladrecipe", async (request,response)=>{
         const recipeblog = await client 
         .db("b28wd")
         .collection("saladblog")
@@ -51,7 +51,7 @@ app.get("/",(request,response)=>{
         response.send(recipeblog);
     });
     
-    app.get("/saladrecipe/:id", auth, async (request,response)=>{
+    app.get("/saladrecipe/:id", async (request,response)=>{
         console.log(request.params);
         const {id} = request.params;
         const blogresult = await getSaladBlogById(id);
@@ -75,7 +75,7 @@ app.get("/",(request,response)=>{
             result.deletedCount>0? response.send(result) : response.status(404).send({message:"no matching movie found"});
         });
 
-        app.put("/saladrecipe/:id", auth, async (request,response)=>{
+        app.put("/saladrecipe/:id",async (request,response)=>{
             console.log(request.params);
             const {id} = request.params;
             const data = request.body;
