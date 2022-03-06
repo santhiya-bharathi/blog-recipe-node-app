@@ -4,7 +4,7 @@ import { MongoClient } from "mongodb";
 import { ObjectId } from "mongodb";
 import cors from "cors";  
 import bcrypt from "bcrypt";
-
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
@@ -27,11 +27,22 @@ async function createConnection(){
 const client = await createConnection();
 
 
+const auth = (request, response, next) => {
+	try{
+		const token = request.header("x-auth-token");
+		console.log("token", token);
+		jwt.verify(token, process.env.SECRET_KEY);
+		next();
+	}catch (err) {
+response.status(401).send({error: err.message});
+	}
+};
+
 app.get("/",(request,response)=>{
     response.send("hello world");
 });
 
-    app.get("/saladrecipe", async (request,response)=>{
+    app.get("/saladrecipe", auth, async (request,response)=>{
         const recipeblog = await client 
         .db("b28wd")
         .collection("saladblog")
@@ -40,7 +51,7 @@ app.get("/",(request,response)=>{
         response.send(recipeblog);
     });
     
-    app.get("/saladrecipe/:id", async (request,response)=>{
+    app.get("/saladrecipe/:id", auth, async (request,response)=>{
         console.log(request.params);
         const {id} = request.params;
         const blogresult = await getSaladBlogById(id);
@@ -49,13 +60,13 @@ app.get("/",(request,response)=>{
         blogresult? response.send(blogresult) : response.status(404).send({message:"no matching movie found"});
     });
     
-    app.post("/saladrecipe", async (request,response)=>{
+    app.post("/saladrecipe", auth, async (request,response)=>{
         const data = request.body;
         const result = await client.db("b28wd").collection("saladblog").insertOne(data);
         response.send(result);
         });
 
-        app.delete("/saladrecipe/:id", async (request,response)=>{
+        app.delete("/saladrecipe/:id", auth, async (request,response)=>{
             console.log(request.params);
             const {id} = request.params;
             const result = await deleteSaladBlogById(id)
@@ -64,7 +75,7 @@ app.get("/",(request,response)=>{
             result.deletedCount>0? response.send(result) : response.status(404).send({message:"no matching movie found"});
         });
 
-        app.put("/saladrecipe/:id", async (request,response)=>{
+        app.put("/saladrecipe/:id", auth, async (request,response)=>{
             console.log(request.params);
             const {id} = request.params;
             const data = request.body;
@@ -160,8 +171,8 @@ app.get("/",(request,response)=>{
             console.log(userFromDB);
         
             if (isPasswordMatch) {
-                
-                response.send({message: "sucessful login"});
+                const token = jwt.sign({id: userFromDB._id}, process.env.SECRET_KEY);
+                response.send({message: "sucessful login", token: token});
             }else{
                 response.send({message: "Invalid Credentials"});
                 // response.status(401).send({message: "Invalid Credentials"});
