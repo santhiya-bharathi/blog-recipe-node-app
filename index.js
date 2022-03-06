@@ -60,7 +60,7 @@ app.get("/",(request,response)=>{
         blogresult? response.send(blogresult) : response.status(404).send({message:"no matching movie found"});
     });
     
-    app.post("/saladrecipe", auth, async (request,response)=>{
+    app.post("/saladrecipe", async (request,response)=>{
         const data = request.body;
         const result = await client.db("b28wd").collection("saladblog").insertOne(data);
         response.send(result);
