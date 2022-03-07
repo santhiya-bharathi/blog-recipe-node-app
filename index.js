@@ -171,8 +171,8 @@ app.get("/",(request,response)=>{
             console.log(userFromDB);
         
             if (isPasswordMatch) {
-                const token = jwt.sign({id: userFromDB._id}, process.env.SECRET_KEY);   
-                response.send({message: "sucessful login", token: token});
+                // const token = jwt.sign({id: userFromDB._id}, process.env.SECRET_KEY);   , token: token
+                response.send({message: "sucessful login"});
             }else{
                 response.send({message: "Invalid Credentials"});
                 // response.status(401).send({message: "Invalid Credentials"});
