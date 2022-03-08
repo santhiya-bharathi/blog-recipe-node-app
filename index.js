@@ -135,14 +135,14 @@ app.get("/",(request,response)=>{
         console.log(userFromDB);
         
         if(userFromDB){
-            response.send({message: "email already exists"});
-            // response.status(400).send({message: "email already exists"});
+            // response.send({message: "email already exists"});
+            response.status(400).send({message: "email already exists"});
             return;
         }
         
         if(password.length < 8){
-            response.send({message: "password must be longer"});
-            // response.status(400).send({message: "password must be longer"});
+            // response.send({message: "password must be longer"});
+            response.status(400).send({message: "password must be longer"});
             return;
         }
         
@@ -157,8 +157,8 @@ app.get("/",(request,response)=>{
             const userFromDB = await getUserByName(email);
         
             if(!userFromDB){
-                response.send({message: "Invalid Credentials"});
-                // response.status(401).send({message: "Invalid Credentials"});
+                // response.send({message: "Invalid Credentials"});
+                response.status(401).send({message: "Invalid Credentials"});
                 return;
             }
         
@@ -174,8 +174,8 @@ app.get("/",(request,response)=>{
                 // const token = jwt.sign({id: userFromDB._id}, process.env.SECRET_KEY);   , token: token
                 response.send({message: "sucessful login"});
             }else{
-                response.send({message: "Invalid Credentials"});
-                // response.status(401).send({message: "Invalid Credentials"});
+                // response.send({message: "Invalid Credentials"});
+                response.status(401).send({message: "Invalid Credentials"});
             }
         
             
